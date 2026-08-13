@@ -1,23 +1,19 @@
 # Temporal Social Recommendation on Epinions
 
-A study of **rating prediction on the Epinions dataset** using user-item interactions, social trust relationships, and temporal information.
+A study of **temporal rating prediction** using user-item interactions, social trust relationships, and temporal dynamics on the Epinions dataset.
 
 ## Overview
 
-This project compares several recommendation models under a **chronological evaluation setting**, where earlier interactions are used to predict future ratings.
-
-The models implemented include:
+The project compares four recommendation models under a **chronological evaluation setting**:
 
 - Bias-Only Baseline
 - Static GraphRec
 - Temporal Matrix Factorization
-- Temporal GraphRec with attention
+- Temporal GraphRec with Attention
 
-The Epinions dataset contains approximately **922K ratings**, **300K trust relationships**, **22K users**, and **296K items** across **11 temporal bins**. :contentReference[oaicite:0]{index=0}
+The dataset contains **922,267 ratings**, **300,548 trust relationships**, **22,164 users**, **296,277 items**, and **11 temporal bins**.
 
 ## Temporal Split
-
-The data is split chronologically:
 
 | Split | Time Bins | Samples |
 |---|---|---:|
@@ -25,100 +21,80 @@ The data is split chronologically:
 | Validation | 8–9 | 121,524 |
 | Test | 10–11 | 73,343 |
 
-This setup evaluates the models on future interactions rather than randomly sampled ratings. :contentReference[oaicite:1]{index=1}
+Models are trained on past interactions and evaluated on future interactions.
 
 ## Models
 
 ### Bias-Only
 
-$$ \hat r_{ui} = \mu + b_u + b_i $$
+$$
+\hat r_{ui} = \mu + b_u + b_i
+$$
 
-A simple baseline using global, user, and item biases.
+Global, user, and item biases provide the baseline.
 
 ### Static GraphRec
 
-Uses:
+Uses user/item/rating embeddings, rating history, and social trust history:
 
-- User/item embeddings
-- Rating embeddings
-- User rating history
-- Social trust history
-- Neural history aggregation
+$$
+h_u = f(H_u^{ratings}, H_u^{social})
+$$
 
 ### Temporal Matrix Factorization
 
-Extends matrix factorization with:
+Models latent factors and temporal drift:
 
-- Time-dependent item biases
-- User temporal drift
-- User/item latent factors
+$$
+\hat r_{uit} =
+\mu+b_u+b_i+b_{i,t}
++\alpha_u dev(u,t)
++P_u^TQ_i
+$$
+
+with latent dimension $k=32$.
 
 ### Temporal GraphRec
 
-Combines:
+Combines rating history, social history, temporal embeddings, attention, and user/item biases:
 
-- User-item interaction history
-- Social trust history
-- Temporal embeddings
-- Attention-based history aggregation
-- User/item biases
+$$
+\hat r_{uit} =
+f(h_u,e_i)+\mu+b_u+b_i
+$$
+
+Historical interactions are aggregated using attention over item/rating/time representations.
 
 ## Results
 
-| Model | Test RMSE | Test MAE |
+| Model | RMSE | MAE |
 |---|---:|---:|
 | Bias-Only | 1.0443 | **0.7988** |
 | Static GraphRec | 1.0423 | 0.8174 |
-| Temporal Matrix Factorization | 1.0570 | 0.8159 |
+| Temporal MF | 1.0570 | 0.8159 |
 | **Temporal GraphRec** | **1.0387** | 0.8013 |
 
-The Temporal GraphRec model achieves the best reported **RMSE of 1.0387**. :contentReference[oaicite:2]{index=2}
+**Best RMSE:** Temporal GraphRec — **1.0387**
 
-## Tech Stack
-
-- Python
-- PyTorch
-- NumPy
-- SciPy
-- Pandas
-- scikit-learn
-- NetworkX
-- Matplotlib
-- Seaborn
-
-## Project Pipeline
+## Pipeline
 
 ```text
-Epinions Dataset
-       │
-       ├── Ratings ──────┐
-       │                 │
-       └── Trust Graph ──┤
-                         ▼
-                 Temporal Split
-                         │
-                         ▼
-                Model Training
-                         │
-                         ▼
-                  Rating Prediction
-                         │
-                         ▼
-                   RMSE / MAE
+Epinions
+   │
+   ├── Ratings ──► User-Item History ──┐
+   │                                    │
+   └── Trust ───► Social Graph ─────────┤
+                                        ▼
+                                Temporal Split
+                                        │
+                                        ▼
+                              Model Training
+                                        │
+                                        ▼
+                               Rating Prediction
+                                        │
+                                        ▼
+                                  RMSE / MAE
 ````
-
-## Future Work
-
-* Strict time-aware history construction
-* Dynamic social graph modeling
-* Temporal/relative-time attention
-* Transformer-based history aggregation
-* Model ablation studies
-* Hyperparameter optimization
-* Multi-seed evaluation
-
-## Dataset
-
-The project uses the Epinions rating and trust data with timestamps. The dataset files expected by the current experiments are:
 
 
