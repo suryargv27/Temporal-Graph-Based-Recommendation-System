@@ -1,6 +1,3 @@
-Absolutely — for GitHub, I’d make it much shorter and more project-focused.
-
-````markdown
 # Temporal Social Recommendation on Epinions
 
 A study of **rating prediction on the Epinions dataset** using user-item interactions, social trust relationships, and temporal information.
@@ -126,16 +123,4 @@ Epinions Dataset
 
 The project uses the Epinions rating and trust data with timestamps. The dataset files expected by the current experiments are:
 
-```text
-rating_with_timestamp.mat
-epinion_trust_with_timestamp.mat
-```
 
-## Status
-
-🚧 **Experimental / Research Project**
-
-Current results are based on the preprocessing, temporal split, and model configurations described above.
-
-```
-```
