@@ -31,9 +31,7 @@ This setup evaluates the models on future interactions rather than randomly samp
 
 ### Bias-Only
 
-\[
-\hat r_{ui} = \mu + b_u + b_i
-\]
+$$ \hat r_{ui} = \mu + b_u + b_i $$
 
 A simple baseline using global, user, and item biases.
 
